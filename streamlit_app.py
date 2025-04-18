@@ -11,15 +11,6 @@ GITHUB_REPO_NAME = st.secrets["GITHUB_REPO_NAME"]
 GITHUB_FILE_PATH = st.secrets["GITHUB_FILE_PATH"] 
 GITHUB_API_TOKEN = st.secrets["GITHUB_API_TOKEN"]
 
-st.set_page_config(
-    page_title="Loki", 
-    page_icon="favicon_black_x128.ico", 
-    # initial_sidebar_state="expanded", 
-    menu_items={
-        'About': '个人大事年表'
-    }
-)
-
 def load_events():
     events = []
     try:
@@ -91,6 +82,14 @@ def display_events(events):
 
 
 def main():
+    st.set_page_config(
+        page_title="Loki", 
+        page_icon="favicon_black_x128.ico", 
+        # initial_sidebar_state="expanded", 
+        menu_items={
+            'About': '个人大事年表'
+        }
+    )
     st.title("「生命长河」")
     # 计算 50 年前的日期
     fifty_years_ago = datetime.now() - timedelta(days=365 * 50)
