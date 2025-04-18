@@ -87,10 +87,10 @@ def main():
     fifty_years_ago = datetime.now() - timedelta(days=365 * 50)
     events = load_events()
     with st.sidebar:
-        st.subheader("添加新事件")
+        st.subheader("新的记忆")
         date = st.date_input("那天……", min_value=fifty_years_ago)
         event = st.text_input("发生了……")
-        if st.button("记忆"):
+        if st.button("接入"):
             events = add_event(events, date, event)
     display_events(events)
 
