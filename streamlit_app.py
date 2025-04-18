@@ -64,6 +64,7 @@ def save_events(events):
         st.success("事件已成功保存到 GitHub 仓库")
     else:
         st.error("保存到 GitHub 仓库时出错，请检查配置")
+        st.error(response.text)
 
 
 def add_event(events, date, event):
