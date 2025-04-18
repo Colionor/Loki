@@ -8,6 +8,7 @@ import base64
 # 从 Streamlit Cloud Secret 中获取 GitHub 仓库信息
 GITHUB_REPO_OWNER = st.secrets["GITHUB_REPO_OWNER"]
 GITHUB_REPO_NAME = st.secrets["GITHUB_REPO_NAME"]
+GITHUB_FILE_PATH = st.secrets["GITHUB_FILE_PATH"] 
 GITHUB_API_TOKEN = st.secrets["GITHUB_API_TOKEN"]
 
 
