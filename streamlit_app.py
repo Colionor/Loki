@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 def load_events():
     events = []
     try:
-        with open('events.csv', 'r', encoding='utf-8') as file:
+        with open('loki.csv', 'r', encoding='utf-8') as file:
             reader = csv.reader(file)
             for row in reader:
                 events.append((row[0], row[1]))
@@ -16,7 +16,7 @@ def load_events():
 
 
 def save_events(events):
-    with open('events.csv', 'w', encoding='utf-8', newline='') as file:
+    with open('loki.csv', 'w', encoding='utf-8', newline='') as file:
         writer = csv.writer(file)
         for date, event in events:
             writer.writerow([date, event])
@@ -31,7 +31,7 @@ def add_event(events, date, event):
 
 
 def display_events(events):
-    st.subheader("记录新的记忆")
+    st.subheader("时间线")
     for date, event in events:
         formatted_date = f"{date[:4]}年{date[5:7]}月{date[8:]}日"
         st.write(f"{formatted_date}，{event}")
@@ -43,7 +43,7 @@ def main():
     fifty_years_ago = datetime.now() - timedelta(days=365 * 50)
     events = load_events()
     with st.sidebar:
-        st.subheader("添加新事件")
+        st.subheader("新的记忆")
         date = st.date_input("那天……", min_value=fifty_years_ago)
         event = st.text_input("发生了……")
         if st.button("记忆"):
