@@ -32,13 +32,13 @@ def load_events():
 
 
 def save_events(events):
-    with open('loki.csv', 'w', encoding='utf-8', newline='') as file:
+    with open('{GITHUB_FILE_PATH}', 'w', encoding='utf-8', newline='') as file:
         writer = csv.writer(file)
         for date, event in events:
             writer.writerow([date, event])
 
     # 读取本地文件内容
-    with open('loki.csv', 'r', encoding='utf-8') as file:
+    with open('{GITHUB_FILE_PATH}', 'r', encoding='utf-8') as file:
         content = file.read()
 
     # 获取文件的 SHA 值
