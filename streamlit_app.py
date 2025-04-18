@@ -1,56 +1,76 @@
 import streamlit as st
-import pandas as pd
-from github import Github
-import os
+import csv
 
-# 配置 GitHub 凭证（在Streamlit Cloud环境变量设置）
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")  # 个人访问令牌
-REPO_NAME = "life-timeline"
-FILE_NAME = "timeline.csv"
 
-def get_github_repo():
-    g = Github(GITHUB_TOKEN)
-    return g.get_user().get_repo(REPO_NAME)
-
-def load_data():
+def load_events():
+    """
+    从 CSV 文件中加载事件记录
+    :return: 包含所有事件记录的列表，每个记录是一个元组 (日期, 事件描述)
+    """
+    events = []
     try:
-        repo = get_github_repo()
-        file = repo.get_contents(FILE_NAME)
-        content = file.decoded_content.decode("utf-8")
-        return pd.read_csv(pd.compat.StringIO(content))
-    except:
-        return pd.DataFrame(columns=["date", "title", "detail", "category"])
+        with open('events.csv', 'r', encoding='utf-8') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                events.append((row[0], row[1]))
+    except FileNotFoundError:
+        pass
+    return events
 
-def save_to_github(df):
-    repo = get_github_repo()
-    csv_content = df.to_csv(index=False)
-    repo.update_file(FILE_NAME, "Update timeline", csv_content, branch="main")
+
+def save_events(events):
+    """
+    将事件记录保存到 CSV 文件中
+    :param events: 包含所有事件记录的列表，每个记录是一个元组 (日期, 事件描述)
+    """
+    with open('events.csv', 'w', encoding='utf-8', newline='') as file:
+        writer = csv.writer(file)
+        for date, event in events:
+            writer.writerow([date, event])
+
+
+def add_event(events, date, event):
+    """
+    向事件列表中添加新事件，并保存到文件
+    :param events: 包含所有事件记录的列表，每个记录是一个元组 (日期, 事件描述)
+    :param date: 新事件的日期
+    :param event: 新事件的描述
+    :return: 更新后的事件列表
+    """
+    date_str = date.strftime('%Y-%m-%d')
+    events.append((date_str, event))
+    save_events(events)
+    return events
+
+
+def display_events(events):
+    """
+    在 Streamlit 应用中显示所有事件记录
+    :param events: 包含所有事件记录的列表，每个记录是一个元组 (日期, 事件描述)
+    """
+    st.subheader("大事年表")
+    for date, event in events:
+        formatted_date = f"{date[:4]}年{date[5:7]}月{date[8:]}日"
+        st.write(f"{formatted_date}，{event}")
+
 
 def main():
-    st.title("「生命长河」")
-    
-    # 加载数据
-    df = load_data()
-    
-    # 添加事件
-    with st.form("add_event"):
-        date = st.date_input("日期")
-        title = st.text_input("标题")
-        detail = st.text_area("详情")
-        category = st.selectbox("分类", ["生活", "工作", "学习"])
-        
-        if st.form_submit_button("保存"):
-            new_row = pd.DataFrame([[date.strftime("%Y-%m-%d"), title, detail, category]])
-            df = pd.concat([df, new_row], ignore_index=True)
-            save_to_github(df)
-            st.success("事件已记录。")
+    # 应用标题
+    st.title("我的大事年表")
 
-    # 显示时间线
-    st.subheader("我的时间线")
-    for index, row in df.iterrows():
-        with st.expander(f"{row['date']} - {row['title']}"):
-            st.write(f"**分类**: {row['category']}")
-            st.write(row['detail'])
+    # 加载已有事件
+    events = load_events()
+
+    # 添加事件的输入框
+    date = st.date_input("日期")
+    event = st.text_input("事件描述")
+    if st.button("添加事件"):
+        events = add_event(events, date, event)
+
+    # 显示所有事件
+    display_events(events)
+
 
 if __name__ == "__main__":
     main()
+    
