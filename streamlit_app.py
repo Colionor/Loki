@@ -54,17 +54,17 @@ def save_events(events):
 
     # 推送更新到 GitHub
     data = {
-        "message": "Update loki.csv",
+        "message": "memory update",
         "content": encoded_content
     }
     if sha:
         data["sha"] = sha
     response = requests.put(url, headers=headers, json=data)
     if response.status_code == 200 or response.status_code == 201:
-        st.success("事件已成功保存到 GitHub 仓库")
+        st.success("记忆接入完毕")
     else:
-        st.error("保存到 GitHub 仓库时出错，请检查配置")
-        st.error(response.text)
+        st.error("记忆接入失败{response.text}")
+        # st.error(response.text)
 
 
 def add_event(events, date, event):
@@ -76,7 +76,7 @@ def add_event(events, date, event):
 
 
 def display_events(events):
-    st.subheader("时间线")
+    # st.subheader("时间线")
     for date, event in events:
         formatted_date = f"{date[:4]}年{date[5:7]}月{date[8:]}日"
         st.write(f"{formatted_date}，{event}")
